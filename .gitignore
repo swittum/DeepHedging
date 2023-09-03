@@ -1,0 +1,6 @@
+# python byte code
+__pycache__/
+
+# main functions
+main*.py
+
