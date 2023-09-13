@@ -1,6 +1,6 @@
 # Underliers
 from .underlier.brownian_stock import BrownianStock
-from .underlier.cir_stock import CIRStock
+from .underlier.heston_stock import HestonStock
 
 # Options
 from .derivative.european_option import EuropeanOption

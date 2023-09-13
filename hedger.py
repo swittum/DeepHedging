@@ -5,8 +5,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from nn import NeuralNetwork
-from finance import BrownianStock
-from finance import EuropeanOption
 from finance import pl
 
 
@@ -23,7 +21,7 @@ class Hedger:
         hist = pl(self.derivative, self.underlier, output)
         return hist.detach().numpy()
 
-    def compute_loss(self, output, p=.1):
+    def compute_loss(self, output, p=0.1):
         output = torch.squeeze(output, dim=-1)
         hist = pl(self.derivative, self.underlier, output)
         hist_sorted, ind_sorted = torch.sort(hist)
@@ -55,6 +53,8 @@ class Hedger:
     
 
 def main():
+    from finance import BrownianStock
+    from finance import EuropeanOption
     n_paths = 200
     n_features = 2
     model = NeuralNetwork(n_features, 1)

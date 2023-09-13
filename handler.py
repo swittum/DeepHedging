@@ -1,8 +1,16 @@
 import yaml
 from hedger import Hedger
 from nn import NeuralNetwork, EuropeanBlackScholes, NoHedge
-from instruments import BrownianStock, CIRStock
+from instruments import BrownianStock, HestonStock
 from instruments import EuropeanOption, LookbackOption
+
+def remove_keys(dictionary, *keys) :
+    for key in keys:
+        if key in dictionary:
+            del dictionary[key]
+        else:
+            raise KeyError(f'{key} not found in dictionary')
+    return dictionary
 
 class Handler:
     def __init__(self, config):
@@ -22,26 +30,25 @@ class Handler:
         models = {'NeuralNetwork': NeuralNetwork,
                   'EuropeanBlackScholes': EuropeanBlackScholes,
                   'NoHedge': NoHedge}
-        in_features = self.config['model']['in_features']
-        out_features = self.config['model']['out_features']
-        model = models[self.config['model']['type']](in_features, out_features)
+        model = models[self.config['model']['type']]
+        kwargs = remove_keys(self.config['model'], 'type')
+        model = model(**kwargs)
         return model
     
     def _setup_underlier(self):
         underliers = {'BrownianStock': BrownianStock,
-                      'CIRStock': CIRStock}
-        mu = self.config['underlier']['mu']
-        sigma = self.config['underlier']['sigma']
-        underlier = underliers[self.config['underlier']['type']](mu, sigma)
+                      'HestonStock': HestonStock}
+        underlier = underliers[self.config['underlier']['type']]
+        kwargs = remove_keys(self.config['underlier'], 'type')
+        underlier = underlier(**kwargs)
         return underlier
     
     def _setup_derivative(self):
         derivatives = {'EuropeanOption': EuropeanOption,
                        'LookbackOption': LookbackOption}
-        call = self.config['derivative']['call']
-        strike = self.config['derivative']['strike']
-        maturity = self.config['derivative']['maturity']
-        derivative = derivatives[self.config['derivative']['type']](self.underlier, call, strike, maturity)
+        derivative = derivatives[self.config['derivative']['type']]
+        kwargs = remove_keys(self.config['derivative'], 'type')
+        derivative = derivative(self.underlier, **kwargs)
         return derivative
     
     def _setup_hedger(self):

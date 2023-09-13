@@ -8,13 +8,22 @@ underlier:
   mu: 0.2
   sigma: 0.3
 
+# underlier:
+#   type: HestonStock
+#   mu: 0.05
+#   kappa: 1.5
+#   theta: 0.04
+#   xi: 0.3
+#   nu0: 0.04
+
 derivative:
   type: EuropeanOption
+  short: true
   call: true
   strike: 1.1
   maturity: 0.4
 
 training:
-  n_paths: 500
+  n_paths: 5000
   n_epochs: 100
 

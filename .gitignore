@@ -13,3 +13,9 @@ main2.py
 
 # old code
 finance.py
+
+# settings
+.vscode/
+
+# images
+*.png

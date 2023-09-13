@@ -3,19 +3,22 @@ from .abstract_option import AbstractOption
 
 
 class EuropeanOption(AbstractOption):
-    def __init__(self, underlier, call=True, strike=1.0, maturity=0.4):
-        super().__init__(underlier, call, strike, maturity)
+    def __init__(self, underlier, short=True, call=True, strike=1.0, maturity=0.4):
+        super().__init__(underlier, short, call, strike, maturity)
 
     def simulate(self, n_paths, dt=1/250):
         self.underlier.simulate(n_paths, self.maturity, dt=dt)
 
     @property
     def payoff(self):
-        return (-1)**(self.call+1)*torch.tensor([max(spot[-1]-self.strike, 0) for spot in self.underlier.spot])
+        return (-1)**self.short*torch.tensor([max(spot[-1]-self.strike, 0) for spot in self.underlier.spot])
     
     @property
     def log_moneyness(self):
-        _log_moneyness = torch.log(self.underlier.spot/self.strike)
+        if self.call:
+            _log_moneyness = torch.log(self.underlier.spot/self.strike)
+        else:
+            _log_moneyness = torch.log(self.strike/self.underlier.spot)
         return _log_moneyness
     
     def reformat(self):

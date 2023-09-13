@@ -2,8 +2,9 @@ from abc import ABC, abstractmethod
 
 
 class AbstractOption:
-    def __init__(self, underlier, call, strike, maturity):
+    def __init__(self, underlier, short, call, strike, maturity):
         self.underlier = underlier
+        self.short = short
         self.call = call
         self.strike = strike
         self.maturity = maturity
