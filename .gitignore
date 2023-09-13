@@ -4,3 +4,11 @@ __pycache__/
 # main functions
 main*.py
 
+# jupyter notebook checkpoints
+*.ipynb_checkpoints
+
+# virtual environment
+.venv/
+
+# old code
+finance.py
