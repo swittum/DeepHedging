@@ -56,12 +56,11 @@ class Handler:
         return hedger
     
     def _setup_training(self):
-        n_epochs = self.config['training']['n_epochs']
-        n_paths = self.config['training']['n_paths']
-        return n_epochs, n_paths
+        fit_params = self.config['training']
+        return fit_params
     
     def run(self):
-        n_epochs, n_paths = self._setup_training()
-        history = self.hedger.fit(n_epochs=n_epochs, n_paths=n_paths)
+        fit_params = self._setup_training()
+        history = self.hedger.fit(**fit_params)
         results = self.hedger.test(n_paths=5000)
         return history, results

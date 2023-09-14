@@ -2,6 +2,7 @@ import torch
 import numpy as np
 from .abstract_stock import AbstractStock
 
+
 class HestonStock(AbstractStock):
     def __init__(self, mu=0.05, kappa=1.5, theta=0.04, xi=0.3, nu0=0.04):
         self.mu = mu

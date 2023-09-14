@@ -2,6 +2,8 @@ model:
   type: NeuralNetwork
   in_features: 2
   out_features: 1
+  n_neurons: 16
+  n_layers: 4
 
 underlier:
   type: BrownianStock
@@ -17,7 +19,7 @@ underlier:
 #   nu0: 0.04
 
 derivative:
-  type: EuropeanOption
+  type: LookbackOption
   short: true
   call: true
   strike: 1.1
@@ -26,4 +28,11 @@ derivative:
 training:
   n_paths: 5000
   n_epochs: 100
+  lr: 0.01
+
+loss:
+  type: ExpectedShortfall
+  p: 0.1
+
+
 

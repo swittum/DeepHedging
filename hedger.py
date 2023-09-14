@@ -31,8 +31,8 @@ class Hedger:
                                         retain_graph=True, create_graph=True)
         return expected_shortfall, gradients
 
-    def fit(self, n_epochs=1, n_paths=200):
-        optimizer = optim.Adam(self.model.parameters(), lr=0.01)
+    def fit(self, n_epochs=1, n_paths=200, lr=0.01):
+        optimizer = optim.Adam(self.model.parameters(), lr=lr)
         history = []
 
         for epoch in range(n_epochs):

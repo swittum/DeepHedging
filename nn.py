@@ -1,6 +1,7 @@
 import torch
 from torch.nn import Module
-from torch.nn import Linear
+import torch.nn.functional as F
+from torch.nn import Linear, ModuleList
 from torch import relu
 from torch.distributions import Normal
 
@@ -10,18 +11,19 @@ def cdf(input):
 
 
 class NeuralNetwork(Module):
-    def __init__(self, in_features, out_features):
+    def __init__(self, in_features, out_features, n_layers=4, n_neurons=16):
         super(NeuralNetwork, self).__init__()
-        self.fc1 = Linear(in_features, 16)
-        self.fc2 = Linear(16, 16)
-        self.fc3 = Linear(16, 16)
-        self.fc4 = Linear(16, out_features)
-
+        layers = []
+        layers.append(Linear(in_features, n_neurons))
+        for _ in range(n_layers - 2):
+            layers.append(Linear(n_neurons, n_neurons))
+        layers.append(Linear(n_neurons, out_features))
+        self.layers = ModuleList(layers)
+        
     def forward(self, X):
-        X = relu(self.fc1(X))
-        X = relu(self.fc2(X))
-        X = relu(self.fc3(X))
-        return self.fc4(X)
+        for layer in self.layers[:-1]:
+            X = F.relu(layer(X))
+        return self.layers[-1](X)
     
 
 class EuropeanBlackScholes(Module):
@@ -43,3 +45,4 @@ class NoHedge(Module):
     def compute_hedge(self):
         n, m = self.derivative.underlier.spot.shape
         return torch.zeros(n, m)
+    
