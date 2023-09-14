@@ -14,9 +14,9 @@ class Hedger:
         self.underlier = underlier
         self.derivative = derivative
 
-    def test(self, n_paths):
+    def test(self, n_paths, features):
         self.derivative.simulate(n_paths=n_paths)
-        input = self.derivative.reformat()
+        input = self.derivative.reformat(features)
         output = torch.squeeze(self.model(input), dim=-1)
         hist = pl(self.derivative, self.underlier, output)
         return hist.detach().numpy()
@@ -31,16 +31,15 @@ class Hedger:
                                         retain_graph=True, create_graph=True)
         return expected_shortfall, gradients
 
-    def fit(self, n_epochs=1, n_paths=200, lr=0.01):
+    def fit(self, features, n_epochs=1, n_paths=200, lr=0.01, p=0.1):
         optimizer = optim.Adam(self.model.parameters(), lr=lr)
         history = []
-
         for epoch in range(n_epochs):
             self.derivative.simulate(n_paths)
-            input = self.derivative.reformat()
+            input = self.derivative.reformat(features)
             output = self.model(input)
 
-            loss, gradients = self.compute_loss(output)
+            loss, gradients = self.compute_loss(output, p=p)
             optimizer.zero_grad()
             for param, grad in zip(self.model.parameters(), gradients):
                 param.grad = grad  # Assign the computed gradients to the model's parameters

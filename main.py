@@ -4,8 +4,7 @@ from handler import Handler
 handler = Handler('./config.yaml')
 history, results = handler.run()
 
-# TODO: Add threhold for expected shortfall to config.yaml
-# TODO: Add input variables to config.yaml
+# TODO: Reorder config.yaml (features array)
 
 fig, (ax1, ax2) = plt.subplots(2)
 ax1.plot(history)

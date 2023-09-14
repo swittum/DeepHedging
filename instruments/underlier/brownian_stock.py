@@ -17,3 +17,4 @@ class BrownianStock(AbstractStock):
             W = torch.cumsum(dW, dim=0)
             self.spot.append(torch.exp((self.mu-self.sigma**2/2)*self.time+self.sigma*W))
         self.spot = torch.stack(self.spot)
+        self.volatility = self.sigma*torch.ones(self.spot.shape)

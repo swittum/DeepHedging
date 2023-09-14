@@ -13,18 +13,29 @@ class EuropeanOption(AbstractOption):
     def payoff(self):
         return (-1)**self.short*torch.tensor([max(spot[-1]-self.strike, 0) for spot in self.underlier.spot])
     
-    @property
-    def log_moneyness(self):
-        if self.call:
-            _log_moneyness = torch.log(self.underlier.spot/self.strike)
-        else:
-            _log_moneyness = torch.log(self.strike/self.underlier.spot)
-        return _log_moneyness
+    # @property
+    # def log_moneyness(self):
+    #     if self.call:
+    #         _log_moneyness = torch.log(self.underlier.spot/self.strike)
+    #     else:
+    #         _log_moneyness = torch.log(self.strike/self.underlier.spot)
+    #     return _log_moneyness
     
-    def reformat(self):
-        time = self.underlier.time
-        log_moneyness = self.log_moneyness
-        time_reshaped = time.unsqueeze(0)
-        time_expanded = time_reshaped.expand(log_moneyness.shape[0], -1)
-        data = torch.stack((log_moneyness, time_expanded), dim=-1)
-        return data
+    # @property
+    # def volatility(self):
+    #     return self.underlier.sigma*torch.ones(self.underlier.spot.shape)
+    
+    # def reformat(self, in_features):
+    #     features = {
+    #         'log_moneyness': self.log_moneyness,
+    #         'volatility': self.volatility,
+    #         'time': self.underlier.time.unsqueeze(0).expand(self.log_moneyness.shape[0], -1)
+    #     }
+    #     features = [features[feature] for feature in in_features]
+    #     data = torch.stack(features, dim=-1)  
+    #     # time = self.underlier.time
+    #     # log_moneyness = self.log_moneyness
+    #     # time_reshaped = time.unsqueeze(0)
+    #     # time_expanded = time_reshaped.expand(log_moneyness.shape[0], -1)
+    #     # data = torch.stack((log_moneyness, time_expanded), dim=-1)
+    #     return data

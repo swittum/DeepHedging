@@ -31,5 +31,7 @@ class HestonStock(AbstractStock):
             dS = self.mu * S[:, j-1] * dt + torch.sqrt(nu[:, j-1]) * S[:, j-1] * dW2[:, j-1]
             S[:, j] = torch.max(S[:, j-1] + dS, torch.tensor(0.0))
         
+        self.volatility = torch.sqrt(nu)
         self.spot = S
+
 

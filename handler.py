@@ -4,13 +4,15 @@ from nn import NeuralNetwork, EuropeanBlackScholes, NoHedge
 from instruments import BrownianStock, HestonStock
 from instruments import EuropeanOption, LookbackOption
 
+
 def remove_keys(dictionary, *keys) :
     for key in keys:
         if key in dictionary:
             del dictionary[key]
-        else:
-            raise KeyError(f'{key} not found in dictionary')
+        # else:
+        #     raise KeyError(f'{key} not found in dictionary')
     return dictionary
+
 
 class Handler:
     def __init__(self, config):
@@ -25,13 +27,12 @@ class Handler:
         self.derivative = self._setup_derivative()
         self.hedger = self._setup_hedger()
 
-
     def _setup_model(self):
         models = {'NeuralNetwork': NeuralNetwork,
                   'EuropeanBlackScholes': EuropeanBlackScholes,
                   'NoHedge': NoHedge}
         model = models[self.config['model']['type']]
-        kwargs = remove_keys(self.config['model'], 'type')
+        kwargs = remove_keys(self.config['model'], 'type', 'features')
         model = model(**kwargs)
         return model
     
@@ -56,11 +57,17 @@ class Handler:
         return hedger
     
     def _setup_training(self):
-        fit_params = self.config['training']
-        return fit_params
+        training_params = self.config['training']
+        return training_params
+    
+    def _setup_testing(self):
+        testing_params = self.config['testing']
+        return testing_params
     
     def run(self):
-        fit_params = self._setup_training()
-        history = self.hedger.fit(**fit_params)
-        results = self.hedger.test(n_paths=5000)
+        training_params = self._setup_training()
+        testing_params = self._setup_testing()
+        features = self.config['training']['features']
+        history = self.hedger.fit(**training_params)
+        results = self.hedger.test(n_paths=5000, features=features)
         return history, results
